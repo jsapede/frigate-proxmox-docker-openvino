@@ -207,7 +207,7 @@ To use it you have to build the model to make it compatible with frigate. this c
 
 the only thing to do is to define the dimensions of the input image shape. 320x320 leads to higher inference time, i'd use 256x256.
 
-```             input_image_shape=(240,240),```
+```             input_image_shape=(256,256),```
 
 and select the base precision of the model. **S** version is good enough, **M** induces much higer inference time : 
 
