@@ -1,5 +1,6 @@
 # frigate-proxmox-docker-openvino
-Complete setting for OpenVINO hardware acceleration in friggate
+
+Complete setting for OpenVINO hardware acceleration in frigate, to avoid CORAL
 
 # Prerequisites
 
