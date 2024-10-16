@@ -242,8 +242,8 @@ model:
   height: 256 # <--- should match whatever was set in notebook
   input_tensor: nchw
   input_pixel_format: bgr
-  path: /config/yolo_nas_s_256.onnx
-  labelmap_path: /labelmap/coco-80.txt
+  path: /config/yolo_nas_s_256.onnx # <--- should match the path and the name of your model file
+  labelmap_path: /labelmap/coco-80.txt # <--- should match the name and the location of the COCO80 labelmap file
 ```
 
 *NOTE : YOLO NAS uses the COCO80 labelmap instead of COCO91*
