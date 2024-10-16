@@ -1,10 +1,13 @@
 # frigate-proxmox-docker-openvino
 
-Complete setting for OpenVINO hardware acceleration in frigate, to avoid CORAL
+Complete setting for OpenVINO hardware acceleration in frigate, instead of CORAL
+
+tutorial is adapted for Docker version of frigate installed in a proxmox LXC and deals mainly with GPU passthroughs
 
 # Prerequisites
 
-Intel iX > GEN6 architecture (i.e. compatible with openvino acceleration)
+- Intel iX > GEN6 architecture (i.e. compatible with openvino acceleration)
+- A proxmox working installation
 
 check in your PVE Shell that `/dev/dri/renderD128` is available :
 
