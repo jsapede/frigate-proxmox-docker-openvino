@@ -178,10 +178,68 @@ you can also check with `intel_gpu_top` inside the LXC console and see that Rend
 
 ![image](https://github.com/user-attachments/assets/ce307fb5-e856-4846-b1ee-94a6bda9758a)
 
-and on your PROXMOX, you can see that CPU load is drastically lowered : 
+and on your PROXMOX, you can see that CPU load of the LXC is drastically lowered : 
 
-![image](https://github.com/user-attachments/assets/10f23477-ee7b-4ec3-8572-749d0a33c995)
+![image](https://github.com/user-attachments/assets/365406eb-f0bc-4367-ba31-42609c587d87)
 
+# Extra settings 
 
+## CPU load
 
+i experimentally found that running those 2 Tteck's scripts int the PVE console greatly reduces the CPU consumption in "idle mode" (i.e. when frigate only "observes" and has no detection running) : 
 
+- [Filesystem Trim](https://tteck.github.io/Proxmox/#proxmox-ve-lxc-filesystem-trim)
+- [CPU Scaling Governor](https://tteck.github.io/Proxmox/#proxmox-ve-cpu-scaling-governor) : set governor to **powersave**
+
+experiment on your own !
+
+## YOLO NAS models
+
+Except default SSDLite model, [YOLO NAS](https://github.com/Deci-AI/super-gradients) model is also [available for OpenVINO acceleration](https://docs.frigate.video/configuration/object_detectors/#yolo-nas). 
+
+To use it you have to build the model to make it compatible with frigate. this can be easily done with the dedicated [google collab](https://colab.research.google.com/github/blakeblackshear/frigate/blob/dev/notebooks/YOLO_NAS_Pretrained_Export.ipynb)
+
+the only thing to do is to define the dimensions of the input image shape. 320x320 leads to higher inference time, i'd use 256x256.
+
+```             input_image_shape=(240,240),```
+
+and select the base precision of the model. **S** version is good enough, **M** induces much higer inference time : 
+
+```
+model = models.get(Models.YOLO_NAS_S, pretrained_weights="coco")
+```
+*NOTE: you can make some tests and find the good combination for your hardware. try to limit inference time around 20 ms*
+
+and specify the name of the model file you will generate :
+
+```
+files.download('yolo_nas_s.onnx')
+```
+
+now simply launch all the steps of the collab, 1 by 1, and it will download the model file : 
+
+![image](https://github.com/user-attachments/assets/53a211a9-c2e9-4a9d-bff2-946ce674fe27)
+
+Copy the model file you generated to your frigate config folder `/opt/frigate/config`
+
+and now change your detector and adapt it accordingly to your settings :
+
+```
+detectors:
+  ov:
+    type: openvino
+    device: GPU
+
+model:
+  model_type: yolonas
+  width: 256 # <--- should match whatever was set in notebook
+  height: 256 # <--- should match whatever was set in notebook
+  input_tensor: nchw
+  input_pixel_format: bgr
+  path: /config/yolo_nas_s_256.onnx
+  labelmap_path: /labelmap/coco-80.txt
+```
+
+*NOTE : YOLO NAS uses the COCO80 labelmap instead of COCO91*
+
+restart ... and VOILA !
