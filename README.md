@@ -6,7 +6,9 @@ Complete setting for OpenVINO hardware acceleration in frigate, to avoid CORAL
 
 Intel iX > GEN6 architecture (i.e. compatible with openvino acceleration)
 
-check in your PVE Shell that `/dev/dri/renderD128` is available
+check in your PVE Shell that `/dev/dri/renderD128` is available :
+
+![image](https://github.com/user-attachments/assets/0d84c1ca-b004-487f-9cde-d4162c6faadf)
 
 optionnally install intel GPU tools :
 
