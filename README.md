@@ -65,15 +65,29 @@ On the LXC shell, create folders to organize your frigate storage for videos / c
 
 Here are my usually settings : 
 
-/opt/frigate : docker-compose.yml location
-/opt/frigate/media : storage
-/opt/frigate/config: config storage
+```
+mkdir /opt/frigate
+mkdir /opt/frigate/media
+mkdir /opt/frigate/config
+```
+
 
 create the forlders according to your needs
 
 next we will build the docker container. 
 
-create a docker-compose.yml at the root folder or create a stack in portainer and add : 
+create a docker-compose.yml at the root folder
+
+```
+cd /opt/frigate
+nano docker-compose.yml
+```
+
+or create a stack in portainer :
+
+![image](https://github.com/user-attachments/assets/3a4add3d-38ec-4313-a9b1-d6761057726c)
+
+and add : 
 
 ```
 version: "3.9"
@@ -116,6 +130,58 @@ as you can see :
 - created folders are bind to frigate usual folders
 - shm_size has to be set according to [documentation](https://docs.frigate.video/frigate/installation/#calculating-required-shm-size)
 - tmpfs has to be adjusted to your configuration, see [documentation](https://docs.frigate.video/frigate/installation/#storage)
+- ports for UI, RTSP and webRTC are forwarded
+- define some FRIGATE_RTSP_PASSWORD and PLUS_API_KEY if needed
+
+From now the docker container is ready, and have access to the GPU.
+
+**Do not start it right now as you have to provide frigate configuraton !**
+
+## Setup Frigate for OpenVINO acceleration
+
+add your frigate configutration :
+
+```
+cd /opt/frigate/config
+nano config.yml
+```
+edit it accroding to your setup and now you must add the [following lines](https://docs.frigate.video/configuration/object_detectors/#openvino-detector) to your frigate config : 
+
+```
+detectors:
+  ov:
+    type: openvino
+    device: GPU
+
+model:
+  width: 300
+  height: 300
+  input_tensor: nhwc
+  input_pixel_format: bgr
+  path: /openvino-model/ssdlite_mobilenet_v2.xml
+  labelmap_path: /openvino-model/coco_91cl_bkgr.txt
+```
+
+Once your `config.yml` is ready build your container by either `docker compose up` or "deploy Stack" if you're using portainer
+
+
+reboot all, and go to frigate UI to check everything is working : 
+
+![image](https://github.com/user-attachments/assets/abad95f0-f0c9-4b59-853f-56a252e6bb65)
+
+you should see : 
+-  low inference time : ~20 ms
+-  low CPU usage
+-  GPU usage
+
+you can also check with `intel_gpu_top` inside the LXC console and see that Render/3D has some loads according to frigate detections 
+
+![image](https://github.com/user-attachments/assets/ce307fb5-e856-4846-b1ee-94a6bda9758a)
+
+and on your PROXMOX, you can see that CPU load is drastically lowered : 
+
+![image](https://github.com/user-attachments/assets/10f23477-ee7b-4ec3-8572-749d0a33c995)
+
 
 
 
