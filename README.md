@@ -12,7 +12,7 @@ tutorial is adapted for Docker version of frigate installed in a proxmox LXC and
 check in your PVE Shell that `/dev/dri/renderD128` is available :
 
 ```
-ce /dev/dri
+cd /dev/dri
 ls
 ```
 
