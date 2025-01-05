@@ -34,12 +34,12 @@ should lead to something like this :
 
 # create Docker LXC :
 
-The easiest way is to use [Tteck's scripts](https://tteck.github.io/Proxmox/)
+The easiest way is to use [Tteck's scripts](https://community-scripts.github.io/ProxmoxVE/)
 
 first in the PVE console launch the tteck's script to install a new docker LXC : 
 
 ```
-bash -c "$(wget -qLO - https://github.com/tteck/Proxmox/raw/main/ct/docker.sh)"
+bash -c "$(wget -qLO - https://github.com/community-scripts/ProxmoxVE/raw/main/ct/docker.sh)"
 ```
 
 during installation : 
@@ -99,7 +99,6 @@ or create a stack in portainer :
 and add : 
 
 ```
-version: "3.9"
 services:
   frigate:
     container_name: frigate
