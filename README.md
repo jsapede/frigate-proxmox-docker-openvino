@@ -115,7 +115,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /opt/frigate/config:/config
-      - /opt/media:/media/frigate
+      - /opt/frigate/media:/media/frigate
       - type: tmpfs
         target: /tmp/cache
         tmpfs:
